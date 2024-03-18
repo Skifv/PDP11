@@ -49,7 +49,7 @@ void load_data()
 {
     address adr;
     int n;
-    byte tmp;
+    word tmp;
     while (scanf("%x%x", &adr, &n) == 2)
     {
         for (address i = adr; i < adr + n; i ++)
@@ -62,12 +62,10 @@ void load_data()
 
 void mem_dump(address adr, int size)
 {
-    int p = 1;
     word w;
-    for(address i = adr; i < adr + 2*size; i += 2)
+    for(address i = adr; i < adr + size; i += 2)
     {
         w = w_read(i);
-        printf("%d %06o: %06o %04x\n", p, i, w, w);
-        p++;
+        printf("%06o: %06o %04x\n", i, w, w);
     }  
 }
