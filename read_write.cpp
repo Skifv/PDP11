@@ -43,3 +43,33 @@ void w_write (address adr, word val)
     mem[adr + 1] = (val & 0xFF00) >> 8;
     mem[adr] = val & 0x00FF;
 }
+
+
+void load_data()
+{
+    address adr;
+    int n;
+    word tmp;
+    while (scanf("%x%x", &adr, &n) == 2)
+    {
+        for (address i = adr; i < adr + n; i ++)
+        {
+            scanf("%x", &tmp);
+            b_write(i, tmp);
+            b_read(i);
+        }
+    }
+}
+
+void mem_dump(address adr, int size)
+{
+    int p = 1;
+    word w;
+    for(address i = adr; i < adr + 2*size; i += 2)
+    {
+        w = w_read(i);
+        printf("%d %06o: %06o %04x\n", p, i, w, w);
+        p++;
+    }  
+}
+
