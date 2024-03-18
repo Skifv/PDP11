@@ -45,16 +45,16 @@ void w_write (address adr, word val)
 }
 
 
-void load_data()
+void load_data(FILE * stream)
 {
     address adr;
     int n;
     word tmp;
-    while (scanf("%x%x", &adr, &n) == 2)
+    while (fscanf(stream, "%x%x", &adr, &n) == 2)
     {
         for (address i = adr; i < adr + n; i ++)
         {
-            scanf("%x", &tmp);
+            fscanf(stream, "%x", &tmp);
             b_write(i, tmp);
         }
     }
@@ -68,4 +68,28 @@ void mem_dump(address adr, int size)
         w = w_read(i);
         printf("%06o: %06o %04x\n", i, w, w);
     }  
+}
+
+void load_file(const char * filename)
+{
+    FILE * fin = fopen(filename, "r");
+    if (fin == NULL)
+    {
+        perror(filename);
+        exit(1);
+    }
+    load_data(fin);
+    fclose(fin);
+}
+
+
+int main()
+{
+    load_file("data.txt");
+
+    mem_dump(0x40, 20);
+    printf("\n");
+    mem_dump(0x200, 0x26);
+
+    return 0;
 }
