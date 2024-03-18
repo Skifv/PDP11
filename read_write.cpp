@@ -49,14 +49,13 @@ void load_data()
 {
     address adr;
     int n;
-    word tmp;
+    byte tmp;
     while (scanf("%x%x", &adr, &n) == 2)
     {
         for (address i = adr; i < adr + n; i ++)
         {
             scanf("%x", &tmp);
             b_write(i, tmp);
-            b_read(i);
         }
     }
 }
@@ -72,4 +71,3 @@ void mem_dump(address adr, int size)
         p++;
     }  
 }
-
