@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdio.h>
 #include "../headers/mem.h"
 
 #define PDP11_MEMSIZE (64 * 1024)

@@ -12,4 +12,4 @@ void b_write(address adr, byte value);
 word w_read(address adr);
 void w_write(address adr, word value);
 
-#include "../reals/mem.cpp"
+#include "../reals/mem.c"

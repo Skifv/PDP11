@@ -3,7 +3,6 @@
 *.exe
 *.dll
 *.static
-*.
 .vscode
 exeshniki
 *.json
