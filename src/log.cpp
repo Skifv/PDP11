@@ -1,8 +1,7 @@
-#include <stdio.h>
-#include <assert.h>
-#include <stdarg.h>
+#pragma once
 
-const char * filename;
+#include <stdio.h>
+#include <stdarg.h>
 
 enum LEVELS {
     DEBUG,
@@ -11,7 +10,10 @@ enum LEVELS {
     ERROR
 };
 
-int CURRENT_LEVEL = DEBUG;
+static int CURRENT_LEVEL = DEBUG;
+
+int log(int level, const char * format, ...);
+int set_log_level(int level);
 
 int log(int level, const char * format, ...)
 {
@@ -33,25 +35,5 @@ int set_log_level(int level)
     int prev_level = CURRENT_LEVEL;
     CURRENT_LEVEL = level;
     return prev_level;
-}
-
-int set_input(int argc, char * argv[])
-{
-    if (argc == 1)
-    {
-        filename = "stdin";
-    }
-    else if (argc >= 2)
-    {
-        filename = argv[argc - 1];
-    }
-    
-    if (filename == NULL)
-    {
-        perror(filename);
-        exit(1);
-    }
-
-    return 0;
 }
 

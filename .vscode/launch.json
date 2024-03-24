@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/git/PDP11/works",
-      "program": "d:/git/PDP11/works/build/Debug/outDebug",
+      "cwd": "d:/git/PDP11/src",
+      "program": "d:/git/PDP11/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
