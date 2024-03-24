@@ -83,9 +83,20 @@ void load_file(const char * filename)
 }
 
 
-int main()
+int main(int argc, char * argv[])
 {
-    load_file("data.txt");
+    const char * filename;
+    if (argc == 1)
+    {
+        filename = "stdin";
+    }
+    else if (argc >= 2)
+    {
+        filename = argv[argc - 1];
+    }
+
+
+    load_file(filename);
 
     mem_dump(0x40, 20);
     printf("\n");
