@@ -1,21 +1,12 @@
 #pragma once
 
 #include <stdio.h>
-
-typedef unsigned char byte;
-typedef unsigned int word;
-typedef word address;
+#include "../headers/mem.h"
 
 #define PDP11_MEMSIZE (64 * 1024)
 
-word reg[8];    // reg[i] - это регистр Ri
-
 static byte mem[PDP11_MEMSIZE];
-
-byte b_read(address adr);
-void b_write(address adr, byte value);
-word w_read(address adr);
-void w_write(address adr, word value);
+word reg[REGSIZE];
 
 byte b_read(address adr)
 {

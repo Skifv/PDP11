@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "mem.cpp"
-#include "log.cpp"
-#include "load_dump.cpp"
+#include "./headers/mem.h"
+#include "./headers/log.h"
+#include "./headers/load_dump.h"
 #include <stdlib.h>
 
 const char * filename;

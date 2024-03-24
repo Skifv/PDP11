@@ -1,12 +1,6 @@
 #pragma once
 
-#include "mem.cpp"
-#include "log.cpp"
-#include <stdlib.h>
-
-void mem_dump(address adr, int size);
-void load_file(const char * filename);
-void load_data(FILE * stream);
+#include "../headers/load_dump.h"
 
 void load_data(FILE * stream)
 {

@@ -1,19 +1,6 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdarg.h>
-
-enum LEVELS {
-    DEBUG,
-    TRACE,
-    INFO,
-    ERROR
-};
-
-static int CURRENT_LEVEL = DEBUG;
-
-int log(int level, const char * format, ...);
-int set_log_level(int level);
+#include "../headers/log.h"
 
 int log(int level, const char * format, ...)
 {
