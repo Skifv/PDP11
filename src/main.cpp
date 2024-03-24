@@ -10,6 +10,8 @@ typedef word address;
 
 #define PDP11_MEMSIZE (64 * 1024)
 
+word reg[8];    // reg[i] - это регистр Ri
+
 byte mem[PDP11_MEMSIZE];
 
 enum LEVELS {
