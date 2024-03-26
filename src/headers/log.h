@@ -6,12 +6,13 @@
 
 enum LEVELS {
     DEBUG,
+    FULLTRACE,
     TRACE,
     INFO,
     ERROR
 };
 
-int CURRENT_LEVEL = DEBUG;
+extern int CURRENT_LEVEL;
 
 int log(int level, const char * format, ...);
 int set_log_level(int level);

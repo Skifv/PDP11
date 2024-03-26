@@ -24,7 +24,7 @@ void run()
             log(TRACE, "halt\n");
             do_halt();            
         }
-
+  
         switch (w & 170000)
         {
         case 060000:

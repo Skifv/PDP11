@@ -2,6 +2,8 @@
 
 #include "../headers/log.h"
 
+
+
 int log(int level, const char * format, ...)
 {
     int sum = 0;

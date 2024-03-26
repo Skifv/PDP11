@@ -29,6 +29,11 @@ void mem_dump(address adr, int size)
 
 void load_file(const char * file)
 {
+    if (file == NULL) {
+        load_data(stdin);
+        return;
+    }
+    
     FILE * fin = fopen(file, "r");
     if (fin == NULL)
     {
