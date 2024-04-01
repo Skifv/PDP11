@@ -1,11 +1,9 @@
-#pragma once
-
 #include "../headers/mem.h"
 
 #define PDP11_MEMSIZE (64 * 1024)
 
-static byte mem[PDP11_MEMSIZE];
 word reg[REGSIZE];
+static byte mem[PDP11_MEMSIZE];
 
 byte b_read(address adr)
 {

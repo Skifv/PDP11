@@ -1,10 +1,12 @@
-#pragma once
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
 #include "../headers/log.h"
 
+int CURRENT_LEVEL = NOTHING;
 
-
-int log(int level, const char * format, ...)
+int trace(int level, const char * format, ...)
 {
     int sum = 0;
 
@@ -15,7 +17,7 @@ int log(int level, const char * format, ...)
         vprintf(format, ap);
         va_end(ap);
     }
-    
+
     return sum;
 }
 

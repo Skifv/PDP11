@@ -6,3 +6,7 @@
 .vscode
 exeshniki
 *.json
+objects
+executors
+data
+test.cpp

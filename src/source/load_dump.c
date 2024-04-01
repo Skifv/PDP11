@@ -1,6 +1,8 @@
-#pragma once
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "../headers/load_dump.h"
+#include "../headers/log.h"
 
 void load_data(FILE * stream)
 {
@@ -23,7 +25,7 @@ void mem_dump(address adr, int size)
     for(address i = adr; i < adr + size; i += 2)
     {
         w = w_read(i);
-        log(INFO, "%06o: %06o %04x\n", i, w, w);
+        trace(INFO, "%06o: %06o %04x\n", i, w, w);
     }  
 }
 

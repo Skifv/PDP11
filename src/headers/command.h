@@ -1,11 +1,23 @@
 #pragma once
 
+#include "mem.h"
+
+typedef struct {
+    word mask;
+    word opcode;
+    const char * name;
+    void (* do_command)(void);
+} Command;
+
+#define N_COMMANDS (3 + 1)
+
+extern Command command[];
+
 void do_halt(void);
 void do_add(void);
 void do_mov(void);
-void do_nothing();
-//void * do_command(void);
+void do_nothing(void);
 
-#include "../headers/log.h"
-#include "../reals/command.c"
+
+
 

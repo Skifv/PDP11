@@ -6,13 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-int CURRENT_LEVEL = INFO;
-
 const char * parse_args(int argc, char * argv[]);
 
 int main(int argc, char * argv[])
 {  
-    
     const char * filename = parse_args(argc, argv);
     load_file(filename);
 
@@ -20,11 +17,16 @@ int main(int argc, char * argv[])
 
     return 0;
 }
+
 void usage(char * argv[]) 
 {
-    fprintf(stdout, "Usage: %s [-t|-T] --|<filename>\n"
-    "-t - trace on\n"
+    trace(INFO, "Usage: %s [-t|-T] --|<filename>\n"
+    "-d - debug on\n"
     "-T - FULL trace on\n"
+    "-t - trace on\n"
+    "-i - info on\n"
+    "-e - error on\n"
+    "default - no messages\n"
     "-- - read from stdin\n", argv[0]);
 }
 
@@ -46,6 +48,14 @@ const char * parse_args(int argc, char * argv[])
         else if (0 == strcmp(argv[argi], "-T"))
         {
             set_log_level(FULLTRACE);
+        }
+        else if (0 == strcmp(argv[argi], "-d"))
+        {
+            set_log_level(DEBUG);
+        }
+        else if (0 == strcmp(argv[argi], "-i"))
+        {
+            set_log_level(INFO);
         }
     }
 
