@@ -18,7 +18,7 @@ EXEC=pdp11.exe
 DATA=./data/data.txt
 # Флаги при запуске программы
 # ФЛАГИ ДЛЯ ТЕСТОВ ТОЛЬКО ПОСЛЕ ФЛАГОВ ЛОГИРОВАНИЯ!!
-FL=-d --testone 2
+FL=-d --testall
 # Директория для файлов зависимостей
 DEP_DIR=$(OBJ_DIR)/dependencies
 
@@ -84,17 +84,18 @@ $(OBJ_DIR)/pdp11.o: pdp11.c | $(OBJ_DIR) $(DEP_DIR)
 # Правило для сборки исполняемого файла
 $(EXE_DIR)/$(EXEC): $(OBJS) $(OBJ_DIR)/pdp11.o | $(EXE_DIR) 
 	$(QUIET)$(CC) $(CFLAGS) $^ -o $@
-	@echo complited
+#	@echo make: compiled
 
 # Цель для удаления объектных файлов и исполняемого файла
 clean:
 	$(QUIET)$(CLEAN_COMMAND) $(OBJ_DIR) $(EXE_DIR)
-	@echo cleaned
+#	@echo make: cleaned
 
 # Правило для запуска программы с указанными параметрами
 run: $(EXE_DIR)/$(EXEC)
 	$(QUIET)$(CHCP)
 	$(VALGRIND) ./$(EXE_DIR)/$(EXEC) $(FL) $(DATA)
+#	@echo make: executed
 
 # Правило для отображения справки
 help:

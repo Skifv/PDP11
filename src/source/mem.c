@@ -1,7 +1,7 @@
+#include <string.h>
+
 #include "../headers/mem.h"
 #include "../headers/log.h"
-
-#define PDP11_MEMSIZE (64 * 1024)
 
 word reg[REGSIZE];
 static byte mem[PDP11_MEMSIZE];
@@ -56,4 +56,28 @@ void w_write (address adr, word val, int reg_space)
 
     mem[adr + 1] = (val & 0xFF00) >> 8;
     mem[adr] = val & 0x00FF;
+}
+
+word original_reg_values[REGSIZE];
+byte original_mem_values[PDP11_MEMSIZE];
+
+void save_original_values() 
+{
+    // —охран€ем исходные значени€ регистров
+    memcpy(original_reg_values, reg, REGSIZE * sizeof(word));
+    // —охран€ем исходное состо€ние пам€ти
+    memcpy(original_mem_values, mem, PDP11_MEMSIZE * sizeof(byte));
+}
+
+void restore_original_values() 
+{
+    // ¬осстанавливаем исходные значени€ регистров
+    memcpy(reg, original_reg_values, REGSIZE * sizeof(word));
+    // ¬осстанавливаем исходное состо€ние пам€ти
+    memcpy(mem, original_mem_values, PDP11_MEMSIZE * sizeof(byte));
+}
+
+void cleanup() 
+{
+    restore_original_values(); // ¬осстанавливаем исходные значени€ регистров и пам€ть
 }
