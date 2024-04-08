@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Чтобы поменять флаг при запуске, меняйте переменную FL в makefile */
+
 const char * parse_args(int argc, char * argv[]);
 
 int main(int argc, char * argv[])

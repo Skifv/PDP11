@@ -24,7 +24,7 @@ void mem_dump(address adr, int size)
     word w;
     for(address i = adr; i < adr + size; i += 2)
     {
-        w = w_read(i);
+        w = w_read(i, MEMSPACE);
         trace(INFO, "%06o: %06o %04x\n", i, w, w);
     }  
 }
