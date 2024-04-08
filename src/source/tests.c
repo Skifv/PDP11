@@ -12,12 +12,15 @@
 test_ptr tests[NTESTS] =
 {
     test_parse_mov,
-    test_mode0,
     test_mov,
+    test_mode0,
     test_mode1_toreg,
     test_mode1_mem_to_mem,
     test_mode1_fromreg_to_mem,
-    test_mov_mode2_mem_to_mem_autoincrement
+    test_mode2_mov_mem_to_mem_autoincrement,
+    test_mode3_mov_indirect_autoincrement,
+    test_mode4_mov_auto_decrement,
+    test_mode5_mov_indirect_auto_decrement
 };
 
 void run_test(int i)
@@ -145,6 +148,7 @@ void test_mode1_toreg(void)
     cleanup();
 }
 
+// Этот тест проверяет корректность выполнения команды mov R3, (R5)
 void test_mode1_fromreg_to_mem(void)
 {
     // Сохраняем исходные значения регистров и памяти
@@ -172,6 +176,7 @@ void test_mode1_fromreg_to_mem(void)
     cleanup();
 }
 
+// Этот тест проверяет корректность выполнения команды mov (R5), (R3)
 void test_mode1_mem_to_mem(void)
 {
     // Сохраняем исходные значения регистров и памяти
@@ -207,7 +212,7 @@ void test_mode1_mem_to_mem(void)
 }
 
 // Этот тест проверяет корректность выполнения команды mov (R5)+, (R3)+,
-void test_mov_mode2_mem_to_mem_autoincrement(void)
+void test_mode2_mov_mem_to_mem_autoincrement(void)
 {
     // Сохраняем исходные значения регистров и памяти
     save_original_values();
@@ -217,22 +222,22 @@ void test_mov_mode2_mem_to_mem_autoincrement(void)
     // Устанавливаем начальные значения
     reg[3] = 01000;    // адрес в регистре R3
     reg[5] = 02000;    // адрес в регистре R5
-    w_write(02000, 10, MEMSPACE); // записываем число 10 по адресу 2000
-    w_write(01000, 6, MEMSPACE); // записываем число 10 по адресу 2000
+    w_write(02000, 010, MEMSPACE); // записываем число 10 по адресу 2000
+    w_write(01000, 06, MEMSPACE); // записываем число 6 по адресу 1000
 
-    assert(w_read(02000, MEMSPACE) == 10);
-    assert(w_read(01000, MEMSPACE) == 6);
+    assert(w_read(02000, MEMSPACE) == 010);
+    assert(w_read(01000, MEMSPACE) == 06);
 
     Command cmd = parse_cmd(0012523); // mov (R5)+, (R3)+
 
-    assert(w_read(02000, MEMSPACE) == 10);
-    assert(w_read(01000, MEMSPACE) == 6);
+    assert(w_read(02000, MEMSPACE) == 010);
+    assert(w_read(01000, MEMSPACE) == 06);
 
     // Выполняем команду
     cmd.do_command();
 
     // Проверяем, что значение из памяти было перемещено
-    assert(w_read(01000, MEMSPACE) == 10);
+    assert(w_read(01000, MEMSPACE) == 010);
 
     // Проверяем, что значение регистра R3 увеличено на 2
     assert(reg[3] == 01002);
@@ -248,3 +253,157 @@ void test_mov_mode2_mem_to_mem_autoincrement(void)
     // Очищаем после завершения теста
     cleanup();
 }
+
+// Этот тест проверяет корректность выполнения команды mov @(R5)+, @(R3)+,
+void test_mode3_mov_indirect_autoincrement(void)
+{
+    // Сохраняем исходные значения регистров и памяти
+    save_original_values();
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Устанавливаем начальные значения
+    reg[3] = 01000;    // адрес в регистре R3
+    reg[5] = 02000;    // адрес в регистре R5
+    w_write(02000, 0300, MEMSPACE); 
+    w_write(0300, 010, MEMSPACE); // записываем число 10 по адресу 300
+
+    w_write(01000, 0100, MEMSPACE);
+    w_write(0100, 02, MEMSPACE); // записываем число 2 по адресу 100
+
+    // Проверяем начальное состояние памяти
+    assert(w_read(0300, MEMSPACE) == 010);
+    assert(w_read(02000, MEMSPACE) == 0300);
+
+    assert(w_read(01000, MEMSPACE) == 0100);
+    assert(w_read(0100, MEMSPACE) == 02);
+
+    // Выполняем команду mov @(R5)+, @(R3)+
+    Command cmd = parse_cmd(0013533);
+
+    // Выполняем команду
+    cmd.do_command();
+
+    // Проверяем, что значение из памяти было перемещено
+    assert(w_read(0100, MEMSPACE) == 010);
+
+    // Проверяем, что значение регистра R3 увеличено на 2
+    assert(reg[3] == 01002);
+
+    // Проверяем, что значение регистра R5 увеличено на 2
+    assert(reg[5] == 02002);
+
+    // Проверяем, что значение в памяти по адресу, хранящемуся в регистре R5, не изменилось
+    assert(w_read(02000, MEMSPACE) == 0300);
+
+    // Проверяем, что значение в памяти по адресу 300 не изменилось
+    assert(w_read(0300, MEMSPACE) == 010);
+
+    // Проверяем, что значение было записано в память
+    assert(w_read(0100, MEMSPACE) == 010);
+
+    // Выводим результат теста
+    trace(TRACE, "\r"); // Возврат каретки в начало строки
+    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
+    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
+    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+
+    // Восстанавливаем исходные значения регистров и памяти
+    cleanup();
+}
+
+// Этот тест проверяет корректность выполнения команды mov -(R3), R1
+void test_mode4_mov_auto_decrement(void)
+{
+    // Сохраняем исходные значения регистров и памяти
+    save_original_values();
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Устанавливаем начальные значения
+    reg[3] = 01002;    // адрес в регистре R3
+    w_write(01000, 05, MEMSPACE); // записываем число 5 по адресу 01000 в память
+
+    // Проверяем начальное состояние памяти и регистра
+    assert(w_read(01000, MEMSPACE) == 05);
+    assert(reg[3] == 01002);
+
+    // Выполняем команду mov -(R3), R1
+    Command cmd = parse_cmd(0014301); // mov -(R3), R1
+
+    // Выполняем команду
+    cmd.do_command();
+
+    // Проверяем, что значение из памяти было перемещено в регистр R1
+    assert(reg[1] == 05);
+
+    // Проверяем, что значение регистра R3 уменьшилось на 2
+    assert(reg[3] == 01000);
+
+    // Проверяем, что значение в памяти по адресу 01000 не изменилось
+    assert(w_read(01000, MEMSPACE) == 05);
+
+    // Выводим результат теста
+    trace(TRACE, "\r"); // Возврат каретки в начало строки
+    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
+    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
+    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+
+    // Восстанавливаем исходные значения регистров и памяти
+    cleanup();
+}
+
+// Этот тест проверяет корректность выполнения команды mov @-(R3), R1
+void test_mode5_mov_indirect_auto_decrement(void)
+{
+    // Сохраняем исходные значения регистров и памяти
+    save_original_values();
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Устанавливаем начальные значения
+    reg[3] = 01002;    // адрес в регистре R3
+    w_write(01000, 0206, MEMSPACE); // записываем адрес 0206 по адресу 01000 в память
+    w_write(0206, 05, MEMSPACE); // записываем число 5 по адресу 0206 в память
+
+    // Проверяем начальное состояние памяти и регистра
+    assert(w_read(01000, MEMSPACE) == 0206);
+    assert(w_read(0206, MEMSPACE) == 05);
+    assert(reg[3] == 01002);
+
+    // Выполняем команду mov @-(R3), R1
+    Command cmd = parse_cmd(0015301); // mov @-(R3), R1
+
+    assert(w_read(01000, MEMSPACE) == 0206);
+    assert(w_read(0206, MEMSPACE) == 05);
+    assert(reg[3] == 01000);
+
+    // Выполняем команду
+    cmd.do_command();
+
+    // Проверяем, что значение из памяти было перемещено в регистр R1
+    assert(reg[1] == 05);
+
+    // Проверяем, что значение регистра R3 уменьшилось на 2
+    assert(reg[3] == 01000);
+
+    // Проверяем, что значение в памяти по адресу 0206 не изменилось
+    assert(w_read(0206, MEMSPACE) == 05);
+
+    // Проверяем, что значение в памяти по адресу 01000 не изменилось
+    assert(w_read(01000, MEMSPACE) == 0206);
+
+    // Выводим результат теста
+    trace(TRACE, "\r"); // Возврат каретки в начало строки
+    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
+    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
+    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+
+    // Восстанавливаем исходные значения регистров и памяти
+    cleanup();
+}
+
+
