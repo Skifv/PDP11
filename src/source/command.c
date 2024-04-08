@@ -11,10 +11,10 @@ Arg dd;
 
 Command command[] = 
 {
-    {0177777, 0000000, "halt", do_halt},
-    {0170000, 0060000, "add", do_add},
-    {0170000, 0010000, "mov", do_mov},
-    {0000000, 0000000, "unknown", do_nothing}
+    {0177777, 0000000, "halt", do_halt, NO_PARAMS},
+    {0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
+    {0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
+    {0000000, 0000000, "unknown", do_nothing, NO_PARAMS}
 };
 
 Arg get_mr(word w)

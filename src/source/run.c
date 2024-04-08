@@ -26,19 +26,16 @@ Command parse_cmd(word w)
         if ((w & command[i].mask) == command[i].opcode)
         {
             trace(TRACE, "%s ", command[i].name);
-            
-            // Проверка на наличие аргументов SS и DD для их чтения
-            // unknown - ничего не читаем
-            if (0 != strcmp(command[i].name, "unknown"))
+        
+            // у команды есть SS?
+            if ((command[i].params & HAS_SS) == HAS_SS)
             {
-                if (((command[i].mask >> 6) & 077) == 00)
-                {
-                    ss = get_mr((w >> 6) & 077);
-                }
-                if (((command[i].mask) & 077) == 00)
-                {
-                    dd = get_mr(w & 077);
-                }
+                ss = get_mr((w >> 6) & 077);
+            }
+            // у команды есть DD?
+            if ((command[i].params & HAS_DD) == HAS_DD)
+            {
+                dd = get_mr(w & 077);
             }
             
             trace(TRACE, "\n");

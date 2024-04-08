@@ -2,11 +2,16 @@
 
 #include "mem.h"
 
+#define NO_PARAMS 0
+#define HAS_DD 1
+#define HAS_SS 2
+
 typedef struct {
     word mask;
     word opcode;
     const char * name;
     void (* do_command)(void);
+    char params;
 } Command;
 
 #define N_COMMANDS (3 + 1)

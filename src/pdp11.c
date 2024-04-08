@@ -17,6 +17,8 @@ int main(int argc, char * argv[])
     const char * filename = parse_args(argc, argv);
     load_file(filename);
 
+    run();
+
     return 0;
 }
 
@@ -29,6 +31,7 @@ void usage(char * argv[])
     "-i - info on\n"
     "-e - error on\n"
     "--testall - run all tests only\n"
+    "--test one <number_of_test> - run tests[number_of_test]"
     "default - no messages\n"
     "-- - read from stdin\n", argv[0]);
 }
