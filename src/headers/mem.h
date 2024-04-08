@@ -7,7 +7,7 @@ typedef word address;
 #define REGSIZE 8
 #define pc reg[REGSIZE - 1]
 
-// Р”Р»СЏ С„СѓРЅРєС†РёР№ w_read, w_write. Р•СЃР»Рё СЂР°Р±РѕС‚Р°РµРј СЃ СЂРµРіРёСЃС‚СЂР°РјРё, С‚Рѕ REGSPACE, РµСЃР»Рё СЃ mem, С‚Рѕ MEMSPACE
+// Для функций w_read, w_write. Если работаем с регистрами, то REGSPACE, если с mem, то MEMSPACE
 #define REGSPACE 1
 #define MEMSPACE 0
 

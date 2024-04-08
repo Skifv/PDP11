@@ -8,7 +8,12 @@ static byte mem[PDP11_MEMSIZE];
 
 void reg_dump(void)
 {
-    trace(TRACE, "r0:%o r1:%o r2:%o r3:%o r4:%o r5:%o r6:%o r7:%o\n", reg[0], reg[1], reg[2], reg[3], reg[4], reg[5], reg[6], reg[7]);
+    for (int i = 0; i < 8; i++)
+    {
+        trace(TRACE, "r%d:%o ", i, reg[i]);
+    }
+    trace(TRACE, "\n");
+
     return;
 }
 

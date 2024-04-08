@@ -3,6 +3,7 @@
 
 #include "../headers/load_dump.h"
 #include "../headers/log.h"
+#include "../headers/mem.h"
 
 void load_data(FILE * stream)
 {

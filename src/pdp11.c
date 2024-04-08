@@ -1,12 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "./headers/mem.h"
 #include "./headers/log.h"
 #include "./headers/load_dump.h"
 #include "./headers/run.h"
-#include <stdlib.h>
-#include <string.h>
+#include "./headers/tests.h"
 
-/* Р§С‚РѕР±С‹ РїРѕРјРµРЅСЏС‚СЊ С„Р»Р°Рі РїСЂРё Р·Р°РїСѓСЃРєРµ, РјРµРЅСЏР№С‚Рµ РїРµСЂРµРјРµРЅРЅСѓСЋ FL РІ makefile */
+/* Чтобы поменять флаг при запуске, меняйте переменную FL в makefile */
 
 const char * parse_args(int argc, char * argv[]);
 
@@ -14,8 +16,6 @@ int main(int argc, char * argv[])
 {  
     const char * filename = parse_args(argc, argv);
     load_file(filename);
-
-    run();
 
     return 0;
 }
@@ -28,6 +28,7 @@ void usage(char * argv[])
     "-t - trace on\n"
     "-i - info on\n"
     "-e - error on\n"
+    "--testall - run all tests only\n"
     "default - no messages\n"
     "-- - read from stdin\n", argv[0]);
 }
@@ -58,6 +59,18 @@ const char * parse_args(int argc, char * argv[])
         else if (0 == strcmp(argv[argi], "-i"))
         {
             set_log_level(INFO);
+        }
+
+        if (0 == strcmp(argv[argi], "--testall"))
+        {
+            run_all_tests();
+            exit(0);
+        }
+        else if (0 == strcmp(argv[argi], "--testone"))
+        {
+            int test_number = atoi(argv[argi + 1]);
+            run_test(test_number);
+            exit(0);
         }
     }
 

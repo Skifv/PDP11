@@ -14,8 +14,8 @@ typedef struct {
 extern Command command[];
 
 typedef struct {
-    word val;     // Р·РЅР°С‡РµРЅРёРµ (С‡С‚Рѕ)
-    address adr;    // Р°РґСЂРµСЃ (РєСѓРґР°)
+    word val;     // значение (что)
+    address adr;    // адрес (куда)
     int reg_space;
 } Arg;
 

@@ -3,55 +3,61 @@
 #include "../headers/run.h"
 #include "../headers/log.h"
 #include "../headers/command.h"
+#include "../headers/mem.h"
 
 #define prn fprintf(stderr, "\n%d: func: %s\n", __LINE__, __FUNCTION__)
 
+word read_cmd(void)
+{
+    word w = w_read(pc, MEMSPACE);
+
+    trace(TRACE, "%06o %06o : ", pc, w);
+
+    pc += 2;
+
+    return w;
+}
+
+Command parse_cmd(word w)
+{
+    Command cmd;
+    for (int i = 0; i < N_COMMANDS; i++)
+    {
+        if ((w & command[i].mask) == command[i].opcode)
+        {
+            trace(TRACE, "%s ", command[i].name);
+            
+            // Ïðîâåðêà íà íàëè÷èå àðãóìåíòîâ SS è DD äëÿ èõ ÷òåíèÿ
+            // unknown - íè÷åãî íå ÷èòàåì
+            if (0 != strcmp(command[i].name, "unknown"))
+            {
+                if (((command[i].mask >> 6) & 077) == 00)
+                {
+                    ss = get_mr((w >> 6) & 077);
+                }
+                if (((command[i].mask) & 077) == 00)
+                {
+                    dd = get_mr(w & 077);
+                }
+            }
+            
+            trace(TRACE, "\n");
+            cmd = command[i];
+            break;
+        }
+    }
+
+    return cmd;
+}
+
 void run()
 {
-    pc = 01000;
+    pc = 01000; 
 
-    word w;     
-
+    Command cmd;   
     while(1) 
     {
-        w = w_read(pc, MEMSPACE);
-
-        trace(TRACE, "%06o %06o : ", pc, w);
-
-        pc += 2;
-
-        for (int i = 0; i < N_COMMANDS; i++)
-        {
-            if ((w & command[i].mask) == command[i].opcode)
-            {
-                trace(TRACE, "%s ", command[i].name);
-                
-                // ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð½Ð°Ð»Ð¸Ñ‡Ð¸Ðµ Ð°Ñ€Ð³ÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² SS Ð¸ DD Ð´Ð»Ñ Ð¸Ñ… Ñ‡Ñ‚ÐµÐ½Ð¸Ñ
-                // unknown - Ð½Ð¸Ñ‡ÐµÐ³Ð¾ Ð½Ðµ Ñ‡Ð¸Ñ‚Ð°ÐµÐ¼
-                if (0 != strcmp(command[i].name, "unknown"))
-                {
-                    if (((command[i].mask >> 6) & 077) == 00)
-                    {
-                        ss = get_mr((w >> 6) & 077);
-                    }
-                    if (((command[i].mask) & 077) == 00)
-                    {
-                        dd = get_mr(w & 077);
-                    }
-                }
-                
-                trace(TRACE, "\n");
-
-                command[i].do_command(); 
-                break;
-                
-
-                /*
-                trace(TRACE, "%s ", command[i].name);
-                command[i].do_command(); 
-                break;
-                */
-            }
-        }
+        cmd = parse_cmd(read_cmd());
+        cmd.do_command();
     }
 }

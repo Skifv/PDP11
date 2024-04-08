@@ -7,7 +7,7 @@
 Arg ss;
 Arg dd;
 
-/* Р’СЃРµ РЅРѕРІС‹Рµ РєРѕРјР°РЅРґС‹ РїРѕРјРµС‰Р°С‚СЊ РґРѕ unknown */
+/* Все новые команды помещать до unknown */
 
 Command command[] = 
 {
@@ -21,35 +21,35 @@ Arg get_mr(word w)
 {
     Arg res;
     
-    int r = w & 7;          // РЅРѕРјРµСЂ СЂРµРіРёСЃС‚СЂР°
-    int m = (w >> 3) & 7;   // РЅРѕРјРµСЂ РјРѕРґС‹
+    unsigned int r = w & 7;          // номер регистра
+    unsigned int m = (w >> 3) & 7;   // номер моды
 
     switch (m) {
-    // РјРѕРґР° 0, R1
+    // мода 0, R1
     case 0:
-        res.adr = r;        // Р°РґСЂРµСЃ - РЅРѕРјРµСЂ СЂРµРіРёСЃС‚СЂР°
+        res.adr = r;        // адрес - номер регистра
         res.reg_space = REGSPACE;
-        res.val = reg[r];   // Р·РЅР°С‡РµРЅРёРµ - С‡РёСЃР»Рѕ РІ СЂРµРіРёСЃС‚СЂРµ
+        res.val = reg[r];   // значение - число в регистре
         trace(TRACE, "R%d ", r);
         break;
 
 
-    // РјРѕРґР° 1, (R1)
+    // мода 1, (R1)
     case 1:
-        res.adr = reg[r];           // РІ СЂРµРіРёСЃС‚СЂРµ Р°РґСЂРµСЃ
+        res.adr = reg[r];           // в регистре адрес
         res.reg_space = MEMSPACE;
-        res.val = w_read(res.adr, res.reg_space);  // РїРѕ Р°РґСЂРµСЃСѓ - Р·РЅР°С‡РµРЅРёРµ
+        res.val = w_read(res.adr, res.reg_space);  // по адресу - значение
         trace(TRACE, "(R%d) ", r);
         break;
 
 
-    // РјРѕРґР° 2, (R1)+ РёР»Рё #3
+    // мода 2, (R1)+ или #3
     case 2:
-        res.adr = reg[r];           // РІ СЂРµРіРёСЃС‚СЂРµ Р°РґСЂРµСЃ
+        res.adr = reg[r];           // в регистре адрес
         res.reg_space = MEMSPACE;
-        res.val = w_read(res.adr, res.reg_space);  // РїРѕ Р°РґСЂРµСЃСѓ - Р·РЅР°С‡РµРЅРёРµ
+        res.val = w_read(res.adr, res.reg_space);  // по адресу - значение
         reg[r] += 2;                // TODO: +1
-        // РїРµС‡Р°С‚СЊ СЂР°Р·РЅРѕР№ РјРЅРµРјРѕРЅРёРєРё РґР»СЏ PC Рё РґСЂСѓРіРёС… СЂРµРіРёСЃС‚СЂРѕРІ
+        // печать разной мнемоники для PC и других регистров
         if (r == 7)
             trace(TRACE, "#%o ", res.val);
         else
@@ -57,7 +57,7 @@ Arg get_mr(word w)
         break;
 
 
-    // РјС‹ РµС‰Рµ РЅРµ РґРѕРїРёСЃР°Р»Рё РґСЂСѓРіРёРµ РјРѕРґС‹
+    // мы еще не дописали другие моды
     default:
         trace(ERROR, "Mode %d not implemented yet!\n", m);
         exit(1);
@@ -75,13 +75,13 @@ void do_halt(void)
 
 void do_mov()
 {
-    // Р·РЅР°С‡РµРЅРёРµ Р°СЂРіСѓРјРµРЅС‚Р° ss РїРёС€РµРј РїРѕ Р°РґСЂРµСЃСѓ Р°СЂРіСѓРјРµРЅС‚Р° dd
+    // значение аргумента ss пишем по адресу аргумента dd
     w_write(dd.adr, ss.val, dd.reg_space);
 }
 
 void do_add()
 {
-    // СЃСѓРјРјСѓ Р·РЅР°С‡РµРЅРёР№ Р°СЂРіСѓРјРµРЅС‚РѕРІ ss Рё dd РїРёС€РµРј РїРѕ Р°РґСЂРµСЃСѓ Р°СЂРіСѓРјРµРЅС‚Р° dd
+    // сумму значений аргументов ss и dd пишем по адресу аргумента dd
     w_write(dd.adr, ss.val + dd.val, dd.reg_space);
 }
 
