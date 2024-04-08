@@ -18,7 +18,11 @@ EXEC=pdp11.exe
 DATA=./data/data.txt
 # Флаги при запуске программы
 # ФЛАГИ ДЛЯ ТЕСТОВ ТОЛЬКО ПОСЛЕ ФЛАГОВ ЛОГИРОВАНИЯ!!
-FL=-d #--testall
+<<<<<<<<< Temporary merge branch 1
+FL=-d --testall
+=========
+FL=-d 
+>>>>>>>>> Temporary merge branch 2
 # Директория для файлов зависимостей
 DEP_DIR=$(OBJ_DIR)/dependencies
 
