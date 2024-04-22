@@ -131,7 +131,7 @@ void do_mov(void)
 void do_add(void)
 {
     // сумму значений аргументов ss и dd пишем по адресу аргумента dd
-    w_write(DD_ARG.adr, (SS_ARG.val + DD_ARG.val) & 0177777, DD_ARG.reg_space);
+    w_write(DD_ARG.adr, SS_ARG.val + DD_ARG.val, DD_ARG.reg_space);
 }
 
 void do_sob(void)

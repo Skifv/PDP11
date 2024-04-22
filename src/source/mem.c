@@ -24,6 +24,7 @@ byte b_read(address adr)
 
 void b_write(address adr, byte value)
 {
+    value = value & 0377;
     mem[adr] = value;
 }
 

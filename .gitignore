@@ -6,6 +6,7 @@
 .vscode
 exeshniki
 *.json
+.vscode
 objects
 executors
 data
