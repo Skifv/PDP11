@@ -5,8 +5,6 @@
 #include "../headers/command.h"
 #include "../headers/mem.h"
 
-#define prn fprintf(stderr, "\n%d: func: %s\n", __LINE__, __FUNCTION__)
-
 word read_cmd(void)
 {
     word w = w_read(pc, MEMSPACE);
@@ -28,15 +26,26 @@ Command parse_cmd(word w)
             trace(TRACE, "%s ", command[i].name);
         
             // у команды есть SS?
-            if ((command[i].params & HAS_SS) == HAS_SS)
+            if (command[i].params & HAS_SS)
             {
-                ss = get_mr((w >> 6) & 077);
+                SS_ARG = get_mr((w >> 6));
             }
             // у команды есть DD?
-            if ((command[i].params & HAS_DD) == HAS_DD)
+            if (command[i].params & HAS_DD)
             {
-                dd = get_mr(w & 077);
+                DD_ARG = get_mr(w);
             }
+            // у команды есть R?
+            if(command[i].params & HAS_R)
+            {
+                R_ARG = get_r(w >> 6);
+            }
+            // у команды есть NN?
+            if (command[i].params & HAS_NN)
+            {
+                NN_ARG = get_nn(w);
+            }
+            
             
             trace(TRACE, "\n");
             cmd = command[i];

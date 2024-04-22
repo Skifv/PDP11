@@ -23,6 +23,15 @@ test_ptr tests[NTESTS] =
     test_mode5_mov_indirect_auto_decrement
 };
 
+void print_all_OK (const char * funcname)
+{
+    trace(TRACE, "\r"); // Возврат каретки в начало строки
+    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
+    trace(TRACE, "\x1b[%dC", (int)strlen(funcname)); // Перемещаем каретку в крайнее правое положение
+    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+
+}
+
 void run_test(int i)
 {
     if ((i >= NTESTS) || (i < 0))
@@ -55,10 +64,7 @@ void test_parse_mov(void)
     Command cmd = parse_cmd(001164);
     assert(strcmp(cmd.name, "mov"));
     
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
@@ -70,21 +76,15 @@ void test_mode0(void)
     trace(TRACE, "%s ", __FUNCTION__);
     reg[3] = 12;    // dd
     reg[5] = 34;    // ss
-    Command cmd = parse_cmd(0010503);
-
-    // это надо чтобы флаги деда не жаловались
-    int x = 1;
-    x += cmd.opcode;
-
-    assert(ss.val == 34);
-    assert(ss.adr == 5);
-    assert(dd.val == 12);
-    assert(dd.adr == 3);
     
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    parse_cmd(0010503);
+
+    assert(SS_ARG.val == 34);
+    assert(SS_ARG.adr == 5);
+    assert(DD_ARG.val == 12);
+    assert(DD_ARG.adr == 3);
+    
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
@@ -94,22 +94,19 @@ void test_mov(void)
     save_original_values();
     
     trace(TRACE, "%s ", __FUNCTION__);
-    reg[3] = 12;    // dd   
+    reg[3] = 12;    // DD   
     reg[5] = 34;    // ss
     Command cmd = parse_cmd(0010503);
     cmd.do_command();
-    assert(reg[3] = 34);
-    assert(reg[5] = 34);
+    assert(reg[3] == 34);
+    assert(reg[5] == 34);
     
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
 
-// тест, что мы разобрали правильно аргументы ss и dd в mov (R5), R3
+// тест, что мы разобрали правильно аргументы ss и DD в mov (R5), R3
 void test_mode1_toreg(void)
 {
     save_original_values();
@@ -118,7 +115,7 @@ void test_mode1_toreg(void)
 
 
     // setup
-    reg[3] = 12;    // dd
+    reg[3] = 12;    // DD
     reg[5] = 0200;  // ss
     w_write(0200, 34, MEMSPACE);
 
@@ -126,24 +123,21 @@ void test_mode1_toreg(void)
     Command cmd = parse_cmd(0011503);
 
 
-    assert(ss.val == 34);
-    assert(ss.adr == 0200);
-    assert(dd.val == 12);
-    assert(dd.adr == 3);
+    assert(SS_ARG.val == 34);
+    assert(SS_ARG.adr == 0200);
+    assert(DD_ARG.val == 12);
+    assert(DD_ARG.adr == 3);
 
 
     cmd.do_command();
 
 
-    assert(reg[3] = 34);
+    assert(reg[3] == 34);
     // проверяем, что значение регистра не изменилось
-    assert(reg[5] = 0200);
+    assert(reg[5] == 0200);
 
 
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
@@ -157,7 +151,7 @@ void test_mode1_fromreg_to_mem(void)
     trace(TRACE, __FUNCTION__);
 
     // Устанавливаем начальные значения
-    reg[3] = 12;    // dd
+    reg[3] = 12;    // DD
     reg[5] = 0200;  // ss
 
     Command cmd = parse_cmd(0010315); // mov R3, (R5)
@@ -168,10 +162,7 @@ void test_mode1_fromreg_to_mem(void)
     // Проверяем, что значение было записано в память
     assert(w_read(0200, MEMSPACE) == 12);
 
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
@@ -185,7 +176,7 @@ void test_mode1_mem_to_mem(void)
     trace(TRACE, __FUNCTION__);
 
     // Устанавливаем начальные значения
-    reg[3] = 0100;    // dd
+    reg[3] = 0100;    // DD
     reg[5] = 0200;  // ss
     w_write(0200, 34, MEMSPACE); // Записываем значение в память
     w_write(0100, 23, MEMSPACE); // Записываем значение в память
@@ -203,10 +194,7 @@ void test_mode1_mem_to_mem(void)
     assert(w_read(0100, MEMSPACE) == 34);
     assert(w_read(0200, MEMSPACE) == 34);
 
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     cleanup();
 }
@@ -245,10 +233,7 @@ void test_mode2_mov_mem_to_mem_autoincrement(void)
     // Проверяем, что значение регистра R5 увеличено на 2
     assert(reg[5] == 02002);
 
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     // Очищаем после завершения теста
     cleanup();
@@ -304,10 +289,7 @@ void test_mode3_mov_indirect_autoincrement(void)
     assert(w_read(0100, MEMSPACE) == 010);
 
     // Выводим результат теста
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     // Восстанавливаем исходные значения регистров и памяти
     cleanup();
@@ -346,10 +328,7 @@ void test_mode4_mov_auto_decrement(void)
     assert(w_read(01000, MEMSPACE) == 05);
 
     // Выводим результат теста
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     // Восстанавливаем исходные значения регистров и памяти
     cleanup();
@@ -397,10 +376,7 @@ void test_mode5_mov_indirect_auto_decrement(void)
     assert(w_read(01000, MEMSPACE) == 0206);
 
     // Выводим результат теста
-    trace(TRACE, "\r"); // Возврат каретки в начало строки
-    trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
-    trace(TRACE, "\x1b[%dC", (int)strlen(__FUNCTION__)); // Перемещаем каретку в крайнее правое положение
-    trace(TRACE, "\033[1;32m OK                       \033[0m\n");
+    print_all_OK(__FUNCTION__);
 
     // Восстанавливаем исходные значения регистров и памяти
     cleanup();

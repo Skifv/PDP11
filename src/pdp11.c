@@ -38,6 +38,7 @@ void usage(char * argv[])
 
 const char * parse_args(int argc, char * argv[])
 {
+    // getopt
     const char * filename = NULL;
     if (argc == 1)
     {

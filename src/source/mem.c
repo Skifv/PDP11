@@ -48,6 +48,8 @@ word w_read(address adr, int reg_space)
 
 void w_write (address adr, word val, int reg_space)
 {
+    val = val & 0177777;
+    
     if (reg_space)
     {
         reg[adr] = val;
