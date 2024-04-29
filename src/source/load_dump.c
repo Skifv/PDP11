@@ -15,7 +15,7 @@ void load_data(FILE * stream)
         for (address i = adr; i < adr + n; i ++)
         {
             fscanf(stream, "%x", &tmp);
-            b_write(i, tmp);
+            b_write(i, tmp, MEMSPACE);
         }
     }
 }

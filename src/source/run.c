@@ -19,12 +19,14 @@ word read_cmd(void)
 Command parse_cmd(word w)
 {
     Command cmd;
-    for (int i = 0; i < N_COMMANDS; i++)
+    for (int i = 0; ; i++)
     {
         if ((w & command[i].mask) == command[i].opcode)
         {
             trace(TRACE, "%s ", command[i].name);
         
+            // команда байтовая или нет?
+            BYTE_COMMAND = command[i].opcode >> 15;
             // у команды есть SS?
             if (command[i].params & HAS_SS)
             {

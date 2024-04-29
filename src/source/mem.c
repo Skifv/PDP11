@@ -17,14 +17,29 @@ void reg_dump(void)
     return;
 }
 
-byte b_read(address adr)
+byte b_read(address adr, int reg_space)
 {
-    return mem[adr];
+    if (reg_space)
+    {
+        return reg[adr] & 0xFF;
+    }
+
+    return mem[adr] & 0xFF;
 }
 
-void b_write(address adr, byte value)
+void b_write(address adr, byte value, int reg_space)
 {
-    value = value & 0377;
+    value = value & 0xFF;
+    if (reg_space)
+    {
+        int b = (value >> 7) & 1; 
+        if (b == 0)
+            reg[adr] = value & 0x00FF;
+        else
+            reg[adr] = value | 0xFF00;
+        return;
+    }
+
     mem[adr] = value;
 }
 
@@ -32,7 +47,7 @@ word w_read(address adr, int reg_space)
 {
     if (reg_space)
     {
-        return reg[adr];
+        return reg[adr] & 0xFFFF;
     }
 
     byte b0 = mem[adr];
@@ -49,7 +64,7 @@ word w_read(address adr, int reg_space)
 
 void w_write (address adr, word val, int reg_space)
 {
-    val = val & 0177777;
+    val = val & 0xFFFF;
     
     if (reg_space)
     {

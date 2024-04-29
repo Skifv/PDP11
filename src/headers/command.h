@@ -8,6 +8,8 @@
 #define HAS_NN 4
 #define HAS_R 8
 
+extern char BYTE_COMMAND;
+
 
 typedef struct {
     word mask;
@@ -16,8 +18,6 @@ typedef struct {
     void (* do_command)(void);
     char params;
 } Command;
-
-#define N_COMMANDS (4 + 1) // 4 команды + unknown
 
 extern Command command[];
 
@@ -47,7 +47,10 @@ Arg_NN get_nn(word w);
 
 void do_halt(void);
 void do_add(void);
+
 void do_mov(void);
+void do_movb(void);
+
 void do_sob(void);
 void do_nothing(void);
 

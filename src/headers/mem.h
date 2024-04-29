@@ -17,8 +17,8 @@ void reg_dump(void);
 
 extern word reg[REGSIZE];
 
-byte b_read(address adr);
-void b_write(address adr, byte value);
+byte b_read(address adr, int reg_space);
+void b_write(address adr, byte value, int reg_space);
 word w_read(address adr, int reg_space);
 void w_write(address adr, word value, int reg_space);
 

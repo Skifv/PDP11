@@ -9,6 +9,8 @@ Arg DD_ARG;
 Arg_R R_ARG;
 Arg_NN NN_ARG;
 
+char BYTE_COMMAND = 0;
+
 /* Все новые команды помещать до unknown */
 
 Command command[] = 
@@ -16,6 +18,7 @@ Command command[] =
     {0177777, 0000000, "halt", do_halt, NO_PARAMS},
     {0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
     {0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
+    {0170000, 0110000, "movb", do_movb, HAS_DD | HAS_SS},
     {0177000, 0077000, "sob", do_sob, HAS_R | HAS_NN},
     {0000000, 0000000, "unknown", do_nothing, NO_PARAMS}
 };
@@ -52,7 +55,15 @@ Arg get_mr(word w)
     case 2:
         res.adr = reg[r];           // в регистре адрес
         res.val = w_read(res.adr, res.reg_space);  // по адресу - значение
-        reg[r] += 2;                // TODO: +1
+
+        if (!BYTE_COMMAND || r >= 6)
+        {
+            reg[r] += 2;
+        }
+        else
+        {
+            reg[r] += 1;               
+        }
         // печать разной мнемоники для PC и других регистров
         if (r == 7)
             trace(TRACE, "#%o ", res.val);
@@ -74,7 +85,14 @@ Arg get_mr(word w)
 
     // мода 4, -(Rn)
     case 4:
-        reg[r] -= 2;                // TODO: -1
+        if (!BYTE_COMMAND || r >= 6)
+        {
+            reg[r] -= 2;                // TODO: -1
+        }
+        else
+        {
+            reg[r] -= 1;
+        }
         res.adr = reg[r];           // в регистре адрес
         res.val = w_read(res.adr, res.reg_space);  // по адресу - значение    
         trace(TRACE, "-(R%d) ", r);
@@ -126,6 +144,12 @@ void do_mov(void)
 {
     // значение аргумента ss пишем по адресу аргумента dd
     w_write(DD_ARG.adr, SS_ARG.val, DD_ARG.reg_space);
+}
+
+void do_movb(void)
+{
+    // значение аргумента ss пишем по адресу аргумента dd
+    b_write(DD_ARG.adr, SS_ARG.val, DD_ARG.reg_space);
 }
 
 void do_add(void)
