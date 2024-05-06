@@ -4,7 +4,7 @@
 // Определение типа функции (в данном случае, функции, не принимающей аргументов и не возвращающей значения)
 typedef void (*test_ptr)();
 
-#define NTESTS 24
+#define NTESTS 25
 
 void run_all_tests(void);
 void run_test(int i);
@@ -35,3 +35,4 @@ void test_sen_command(void);
 void test_sev_command(void);
 void test_sez_command(void);
 void test_br_command(void);
+void test_br_command_negative(void);

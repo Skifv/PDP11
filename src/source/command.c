@@ -207,7 +207,7 @@ void do_clr(void)
 
 void do_br(void)
 {
-    pc += 2* XX_ARG.val;
+    pc = pc + 2 * XX_ARG.val;
 }
 
 void do_ccc() 

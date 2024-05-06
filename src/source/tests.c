@@ -34,7 +34,8 @@ test_ptr tests[NTESTS] =
     test_sen_command,
     test_sev_command,
     test_sez_command,
-    test_br_command
+    test_br_command,
+    test_br_command_negative
 };
 
 void print_all_OK (const char * funcname)
@@ -760,28 +761,41 @@ void test_br_command(void)
     // Выводим информацию о тесте
     trace(TRACE, __FUNCTION__);
 
-    trace(TRACE, "\n");
     // Выполняем команду br
     Command cmd = parse_cmd(000402); // br
     cmd.do_command();
 
     // Проверяем, что PC изменился на 2 слова вперед
     assert(pc == 0104);
-
-    pc = 01004;
-
-    // Выполняем команду br
-    cmd = parse_cmd(000775); // br
-    cmd.do_command();
-
-    // Проверяем, что PC изменился на 3 слова назад
-    assert(pc == 01000);
-
-
-trace(TRACE, "\n");
+    
     // Выводим результат теста
     print_all_OK(__FUNCTION__);
 
     // Восстанавливаем исходное значение PC
     pc = original_PC;
 }
+
+// Тест для команды br (безусловный переход)
+void test_br_command_negative(void)
+{
+    // Сохраняем текущее значение PC
+    word original_PC = pc;
+
+    pc = 01006;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+    // Выполняем команду br
+    Command cmd = parse_cmd(000775); // br
+    cmd.do_command();
+    
+    // Проверяем, что PC изменился на 3 слова назад
+    assert(pc == 01000);
+    
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение PC
+    pc = original_PC;
+}
+
