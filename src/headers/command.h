@@ -65,6 +65,12 @@ void do_clr(void);
 
 void do_br(void);
 
+void do_cmp(void);
+void do_cmpb(void);
+
+void do_tst(void);
+void do_tstb(void);
+
 void do_ccc();
 void do_clc();
 void do_cln();
@@ -76,6 +82,23 @@ void do_sec();
 void do_sen();
 void do_sev();
 void do_sez();
+
+void do_bcc();
+void do_bcs();
+void do_beq();
+void do_bge();
+void do_bgt();
+void do_bhi();
+void do_bhis();
+void do_ble();
+void do_blt();
+void do_blo();
+void do_blos();
+void do_bmi();
+void do_bne();
+void do_bpl();
+void do_bvc();
+void do_bvs();
 
 void do_nothing(void);
 

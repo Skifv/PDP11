@@ -72,6 +72,6 @@ void run()
     {
         cmd = parse_cmd(read_cmd());
         cmd.do_command();
-        reg_dump();
+        
     }
 }

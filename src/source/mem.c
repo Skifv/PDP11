@@ -34,6 +34,17 @@ void reg_dump(void)
     return;
 }
 
+void flags_dump(void)
+{
+    trace(TRACE, "N Z V C\n");
+    trace(TRACE, "%d %d %d %d\n", flags.N, flags.Z, flags.V, flags.C);
+
+    trace(TRACE, "\n");
+
+    return;
+}
+
+
 byte b_read(address adr, int reg_space)
 {
     if (reg_space)

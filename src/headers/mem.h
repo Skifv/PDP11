@@ -24,6 +24,7 @@ void set_N(int result);
 void set_Z(int result);
 
 void reg_dump(void);
+void flags_dump(void);
 
 extern word reg[REGSIZE];
 
