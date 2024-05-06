@@ -8,6 +8,7 @@ Arg SS_ARG;
 Arg DD_ARG;
 Arg_R R_ARG;
 Arg_NN NN_ARG;
+Arg_XX XX_ARG;
 
 char BYTE_COMMAND = 0;
 
@@ -25,6 +26,11 @@ Command command[] =
     {0177000, 0077000, "sob", do_sob, HAS_R | HAS_NN},
 
     {0177700, 0005000, "clr", do_clr, HAS_DD},
+
+    {0177700, 0000400, "br", do_br, HAS_XX},
+    {0177700, 0000500, "br", do_br, HAS_XX},
+    {0177700, 0000600, "br", do_br, HAS_XX},
+    {0177700, 0000700, "br", do_br, HAS_XX},
 
     {0177777, 000257, "ccc", do_ccc, NO_PARAMS},
     {0177777, 000241, "clc", do_clc, NO_PARAMS},
@@ -151,6 +157,16 @@ Arg_NN get_nn(word w)
     return res;
 }
 
+Arg_XX get_xx(word w)
+{
+    Arg_XX res;
+    res.val = w & 0xFF;
+
+    trace(TRACE, "%06o ", pc + 2 * res.val);
+
+    return res;
+}
+
 void do_halt(void)
 {
     reg_dump();
@@ -187,6 +203,11 @@ void do_sob(void)
 void do_clr(void)
 {
     w_write(DD_ARG.adr, 0, DD_ARG.reg_space);
+}
+
+void do_br(void)
+{
+    pc += 2* XX_ARG.val;
 }
 
 void do_ccc() 

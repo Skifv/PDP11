@@ -22,7 +22,19 @@ test_ptr tests[NTESTS] =
     test_mode4_mov_auto_decrement,
     test_mode5_mov_indirect_auto_decrement,
     test_clr_command,
-    test_sob_command
+    test_sob_command,
+    test_ccc_command,
+    test_clc_command,
+    test_cln_command,
+    test_clv_command,
+    test_clz_command,
+    test_nop_command,
+    test_scc_command,
+    test_sec_command,
+    test_sen_command,
+    test_sev_command,
+    test_sez_command,
+    test_br_command
 };
 
 void print_all_OK (const char * funcname)
@@ -449,4 +461,327 @@ void test_sob_command(void)
 
     // Восстанавливаем исходные значения регистра и счетчика команд
     cleanup();
+}
+
+// Тест для команды ccc (очистка флагов)
+void test_ccc_command(void)
+{
+    // Сохраняем текущие значения флагов
+    unsigned char original_N = flags.N;
+    unsigned char original_Z = flags.Z;
+    unsigned char original_V = flags.V;
+    unsigned char original_C = flags.C;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду ccc
+    Command cmd = parse_cmd(000257); // ccc
+    cmd.do_command();
+
+    // Проверяем, что все флаги были успешно очищены
+    assert(flags.N == 0);
+    assert(flags.Z == 0);
+    assert(flags.V == 0);
+    assert(flags.C == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходные значения флагов
+    flags.N = original_N;
+    flags.Z = original_Z;
+    flags.V = original_V;
+    flags.C = original_C;
+}
+
+// Тест для команды clc (очистка флага C)
+void test_clc_command(void)
+{
+    // Сохраняем текущее значение флага C
+    unsigned char original_C = flags.C;
+
+    // Устанавливаем новое начальное значение для теста
+    flags.C = 1;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду clc
+    Command cmd = parse_cmd(000241); // clc
+    cmd.do_command();
+
+    // Проверяем, что флаг C был успешно очищен
+    assert(flags.C == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага C
+    flags.C = original_C;
+}
+
+// Тест для команды cln (очистка флага N)
+void test_cln_command(void)
+{
+    // Сохраняем текущее значение флага N
+    unsigned char original_N = flags.N;
+
+    // Устанавливаем новое начальное значение для теста
+    flags.N = 1;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду cln
+    Command cmd = parse_cmd(000250); // cln
+    cmd.do_command();
+
+    // Проверяем, что флаг N был успешно очищен
+    assert(flags.N == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага N
+    flags.N = original_N;
+}
+
+// Тест для команды clv (очистка флага V)
+void test_clv_command(void)
+{
+    // Сохраняем текущее значение флага V
+    unsigned char original_V = flags.V;
+
+    // Устанавливаем новое начальное значение для теста
+    flags.V = 1;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду clv
+    Command cmd = parse_cmd(000242); // clv
+    cmd.do_command();
+
+    // Проверяем, что флаг V был успешно очищен
+    assert(flags.V == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага V
+    flags.V = original_V;
+}
+
+// Тест для команды clz (очистка флага Z)
+void test_clz_command(void)
+{
+    // Сохраняем текущее значение флага Z
+    unsigned char original_Z = flags.Z;
+
+    // Устанавливаем новое начальное значение для теста
+    flags.Z = 1;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду clz
+    Command cmd = parse_cmd(000244); // clz
+    cmd.do_command();
+
+    // Проверяем, что флаг Z был успешно очищен
+    assert(flags.Z == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага Z
+    flags.Z = original_Z;
+}
+
+// Тест для команды nop (ничего не делать)
+void test_nop_command(void)
+{
+    // Сохраняем текущие значения флагов
+    unsigned char original_N = flags.N;
+    unsigned char original_Z = flags.Z;
+    unsigned char original_V = flags.V;
+    unsigned char original_C = flags.C;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду nop
+    Command cmd = parse_cmd(000240); // nop
+    cmd.do_command();
+
+    // Проверяем, что флаги остались неизменными
+    assert(flags.N == original_N);
+    assert(flags.Z == original_Z);
+    assert(flags.V == original_V);
+    assert(flags.C == original_C);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+}
+
+// Тест для команды scc (установка всех флагов)
+void test_scc_command(void)
+{
+    // Сохраняем текущие значения флагов
+    unsigned char original_N = flags.N;
+    unsigned char original_Z = flags.Z;
+    unsigned char original_V = flags.V;
+    unsigned char original_C = flags.C;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду scc
+    Command cmd = parse_cmd(000277); // scc
+    cmd.do_command();
+
+    // Проверяем, что все флаги были успешно установлены
+    assert(flags.N == 1);
+    assert(flags.Z == 1);
+    assert(flags.V == 1);
+    assert(flags.C == 1);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходные значения флагов
+    flags.N = original_N;
+    flags.Z = original_Z;
+    flags.V = original_V;
+    flags.C = original_C;
+}
+
+// Тест для команды sec (установка флага C)
+void test_sec_command(void)
+{
+    // Сохраняем текущее значение флага C
+    unsigned char original_C = flags.C;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду sec
+    Command cmd = parse_cmd(000261); // sec
+    cmd.do_command();
+
+    // Проверяем, что флаг C был успешно установлен
+    assert(flags.C == 1);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага C
+    flags.C = original_C;
+}
+
+// Тест для команды sen (установка флага N)
+void test_sen_command(void)
+{
+    // Сохраняем текущее значение флага N
+    unsigned char original_N = flags.N;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду sen
+    Command cmd = parse_cmd(000270); // sen
+    cmd.do_command();
+
+    // Проверяем, что флаг N был успешно установлен
+    assert(flags.N == 1);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага N
+    flags.N = original_N;
+}
+
+// Тест для команды sev (установка флага V)
+void test_sev_command(void)
+{
+    // Сохраняем текущее значение флага V
+    unsigned char original_V = flags.V;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду sev
+    Command cmd = parse_cmd(000262); // sev
+    cmd.do_command();
+
+    // Проверяем, что флаг V был успешно установлен
+    assert(flags.V == 1);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага V
+    flags.V = original_V;
+}
+
+// Тест для команды sez (установка флага Z)
+void test_sez_command(void)
+{
+    // Сохраняем текущее значение флага Z
+    unsigned char original_Z = flags.Z;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Выполняем команду sez
+    Command cmd = parse_cmd(000264); // sez
+    cmd.do_command();
+
+    // Проверяем, что флаг Z был успешно установлен
+    assert(flags.Z == 1);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение флага Z
+    flags.Z = original_Z;
+}
+
+// Тест для команды br (безусловный переход)
+void test_br_command(void)
+{
+    // Сохраняем текущее значение PC
+    word original_PC = pc;
+
+    pc = 0100;
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    trace(TRACE, "\n");
+    // Выполняем команду br
+    Command cmd = parse_cmd(000402); // br
+    cmd.do_command();
+
+    // Проверяем, что PC изменился на 2 слова вперед
+    assert(pc == 0104);
+
+    pc = 01004;
+
+    // Выполняем команду br
+    cmd = parse_cmd(000775); // br
+    cmd.do_command();
+
+    // Проверяем, что PC изменился на 3 слова назад
+    assert(pc == 01000);
+
+
+trace(TRACE, "\n");
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходное значение PC
+    pc = original_PC;
 }

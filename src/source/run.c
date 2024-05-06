@@ -47,6 +47,11 @@ Command parse_cmd(word w)
             {
                 NN_ARG = get_nn(w);
             }
+            // у команды есть XX?
+            if (command[i].params & HAS_XX)
+            {
+                XX_ARG = get_xx(w);
+            }
             
             
             trace(TRACE, "\n");
@@ -67,5 +72,6 @@ void run()
     {
         cmd = parse_cmd(read_cmd());
         cmd.do_command();
+        reg_dump();
     }
 }

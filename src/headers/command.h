@@ -7,6 +7,7 @@
 #define HAS_SS 2
 #define HAS_NN 4
 #define HAS_R 8
+#define HAS_XX 16
 
 extern char BYTE_COMMAND;
 
@@ -35,14 +36,21 @@ typedef struct {
     word val;   
 } Arg_NN;
 
+typedef struct {
+    char val;
+} Arg_XX;
+
 extern Arg SS_ARG;
 extern Arg DD_ARG;
 extern Arg_R R_ARG;
 extern Arg_NN NN_ARG;
+extern Arg_XX XX_ARG;
+
 
 Arg get_mr(word w);
 Arg_R get_r(word w);
 Arg_NN get_nn(word w);
+Arg_XX get_xx(word w);
 
 
 void do_halt(void);
@@ -54,6 +62,8 @@ void do_movb(void);
 void do_sob(void);
 
 void do_clr(void);
+
+void do_br(void);
 
 void do_ccc();
 void do_clc();
