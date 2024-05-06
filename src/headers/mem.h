@@ -13,6 +13,16 @@ typedef word address;
 #define REGSPACE 1
 #define MEMSPACE 0
 
+typedef struct {
+    unsigned char N, Z, V, C;
+} PWD;
+
+extern PWD flags;
+
+void set_C(int result);
+void set_N(int result);
+void set_Z(int result);
+
 void reg_dump(void);
 
 extern word reg[REGSIZE];
@@ -24,6 +34,7 @@ void w_write(address adr, word value, int reg_space);
 
 extern word original_reg_values[REGSIZE];
 extern byte original_mem_values[PDP11_MEMSIZE];
+
 void save_original_values(void);
 void restore_original_values(void);
 void cleanup(void);

@@ -16,10 +16,28 @@ char BYTE_COMMAND = 0;
 Command command[] = 
 {
     {0177777, 0000000, "halt", do_halt, NO_PARAMS},
+
     {0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
+
     {0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
     {0170000, 0110000, "movb", do_movb, HAS_DD | HAS_SS},
+
     {0177000, 0077000, "sob", do_sob, HAS_R | HAS_NN},
+
+    {0177700, 0005000, "clr", do_clr, HAS_DD},
+
+    {0177777, 000257, "ccc", do_ccc, NO_PARAMS},
+    {0177777, 000241, "clc", do_clc, NO_PARAMS},
+    {0177777, 000250, "cln", do_cln, NO_PARAMS},
+    {0177777, 000242, "clv", do_clv, NO_PARAMS},
+    {0177777, 000244, "clz", do_clz, NO_PARAMS},
+    {0177777, 000240, "nop", do_nop, NO_PARAMS},
+    {0177777, 000277, "scc", do_scc, NO_PARAMS},
+    {0177777, 000261, "sec", do_sec, NO_PARAMS},
+    {0177777, 000270, "sen", do_sen, NO_PARAMS},
+    {0177777, 000262, "sev", do_sev, NO_PARAMS},
+    {0177777, 000264, "sez", do_sez, NO_PARAMS},
+
     {0000000, 0000000, "unknown", do_nothing, NO_PARAMS}
 };
 
@@ -164,6 +182,72 @@ void do_sob(void)
     {
         pc -= 2 * NN_ARG.val;
     }
+}
+
+void do_clr(void)
+{
+    w_write(DD_ARG.adr, 0, DD_ARG.reg_space);
+}
+
+void do_ccc() 
+{
+    flags.N = 0;
+    flags.Z = 0;
+    flags.V = 0;
+    flags.C = 0;
+}
+
+void do_clc() 
+{
+    flags.C = 0;
+}
+
+void do_cln() 
+{
+    flags.N = 0;
+}
+
+void do_clv() 
+{
+    flags.V = 0;
+}
+
+void do_clz() 
+{
+    flags.Z = 0;
+}
+
+void do_nop() 
+{
+    // Ничего не делаем
+}
+
+void do_scc() 
+{
+    flags.N = 1;
+    flags.Z = 1;
+    flags.V = 1;
+    flags.C = 1;
+}
+
+void do_sec() 
+{
+    flags.C = 1;
+}
+
+void do_sen() 
+{
+    flags.N = 1;
+}
+
+void do_sev() 
+{
+    flags.V = 1;
+}
+
+void do_sez() 
+{
+    flags.Z = 1;
 }
 
 

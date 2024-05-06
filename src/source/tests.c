@@ -20,7 +20,9 @@ test_ptr tests[NTESTS] =
     test_mode2_mov_mem_to_mem_autoincrement,
     test_mode3_mov_indirect_autoincrement,
     test_mode4_mov_auto_decrement,
-    test_mode5_mov_indirect_auto_decrement
+    test_mode5_mov_indirect_auto_decrement,
+    test_clr_command,
+    test_sob_command
 };
 
 void print_all_OK (const char * funcname)
@@ -382,4 +384,69 @@ void test_mode5_mov_indirect_auto_decrement(void)
     cleanup();
 }
 
+// Тест для команды clr (очистка регистра)
+void test_clr_command(void)
+{
+    // Сохраняем исходные значения регистров и памяти
+    save_original_values();
 
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Устанавливаем начальные значения
+    reg[1] = 12345; // Произвольное значение в регистре R1
+
+    // Проверяем начальное состояние регистра
+    assert(reg[1] == 12345);
+
+    // Выполняем команду clr для регистра R1
+    Command cmd = parse_cmd(0005001); // clr R1 (очищает значение в указанном регистре)
+
+    // Выполняем команду
+    cmd.do_command();
+
+    // Проверяем, что значение в регистре R1 стало равным нулю
+    assert(reg[1] == 0);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходные значения регистров и памяти
+    cleanup();
+}
+
+// Тест для команды sob (уменьшение регистра и условный переход)
+void test_sob_command(void)
+{
+    // Сохраняем исходные значения регистров и памяти
+    save_original_values();
+
+    // Выводим информацию о тесте
+    trace(TRACE, __FUNCTION__);
+
+    // Устанавливаем начальные значения
+    reg[2] = 5; // Произвольное начальное значение в регистре R2
+    pc = 100; // Произвольное начальное значение счетчика команд
+
+    // Проверяем начальное состояние регистра и счетчика команд
+    assert(reg[2] == 5);
+    assert(pc == 100);
+
+    // Выполняем команду sob с произвольным параметром NN
+    Command cmd = parse_cmd(0077202); // sob R2, 2
+
+    // Выполняем команду
+    cmd.do_command();
+
+    // Проверяем, что значение в регистре R2 уменьшилось на 1
+    assert(reg[2] == 4);
+
+    // Проверяем, что pc уменьшилось на 2*NN_ARG.val, так как значение в регистре R2 после уменьшения не равно 0
+    assert(pc == 100 - 2 * 2);
+
+    // Выводим результат теста
+    print_all_OK(__FUNCTION__);
+
+    // Восстанавливаем исходные значения регистра и счетчика команд
+    cleanup();
+}

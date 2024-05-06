@@ -6,6 +6,23 @@
 word reg[REGSIZE];
 static byte mem[PDP11_MEMSIZE];
 
+PWD flags = {0, 0, 0, 0};
+
+void set_Z (int result)
+{
+    flags.Z = (result == 0) ? 1 : 0;
+}
+
+void set_N (int result)
+{
+    flags.N = (result < 0) ? 1 : 0;
+}
+
+void set_C (int result)
+{
+    flags.C = (result & 0x010000) ? 1 : 0;
+}
+
 void reg_dump(void)
 {
     for (int i = 0; i < 8; i++)

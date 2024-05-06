@@ -52,6 +52,21 @@ void do_mov(void);
 void do_movb(void);
 
 void do_sob(void);
+
+void do_clr(void);
+
+void do_ccc();
+void do_clc();
+void do_cln();
+void do_clv();
+void do_clz();
+void do_nop();
+void do_scc();
+void do_sec();
+void do_sen();
+void do_sev();
+void do_sez();
+
 void do_nothing(void);
 
 
