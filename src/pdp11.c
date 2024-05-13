@@ -8,14 +8,13 @@
 #include "./headers/run.h"
 #include "./headers/tests.h"
 
-/* Чтобы поменять флаг при запуске, меняйте переменную FL в makefile */
-
 const char * parse_args(int argc, char * argv[]);
 
 int main(int argc, char * argv[])
 {  
     const char * filename = parse_args(argc, argv);
     load_file(filename);
+    b_write(ostat, 0xFF, MEMSPACE);
     
     run();
 

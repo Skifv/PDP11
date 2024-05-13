@@ -12,6 +12,9 @@ Arg_XX XX_ARG;
 
 char BYTE_COMMAND = 0;
 
+address ostat = 0177564;
+address odata = 0177566;
+
 /* Все новые команды помещать до unknown */
 
 Command command[] = 
@@ -79,7 +82,7 @@ Arg get_mr(word w)
     unsigned int r = w & 7;          // номер регистра
     unsigned int m = (w >> 3) & 7;   // номер моды
 
-
+ 
     switch (m) {
     // мода 0, R1
     case 0:
@@ -271,7 +274,7 @@ void do_tstb(void)
 
 void do_cmp(void)
 {
-    word result = SS_ARG.val - DD_ARG.val;
+    word result = w_read(SS_ARG.adr, SS_ARG.reg_space) - w_read(DD_ARG.adr, DD_ARG.reg_space);
 
     set_N(result);
     set_Z(result);
@@ -280,7 +283,7 @@ void do_cmp(void)
 
 void do_cmpb(void)
 {
-    byte result = SS_ARG.val - DD_ARG.val;
+    byte result = b_read(SS_ARG.adr, SS_ARG.reg_space) - b_read(DD_ARG.adr, DD_ARG.reg_space);
 
     set_N(result);
     set_Z(result);

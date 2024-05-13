@@ -2,6 +2,7 @@
 
 #include "../headers/mem.h"
 #include "../headers/log.h"
+#include "../headers/command.h"
 
 word reg[REGSIZE];
 static byte mem[PDP11_MEMSIZE];
@@ -15,12 +16,26 @@ void set_Z (int result)
 
 void set_N (int result)
 {
-    flags.N = (result < 0) ? 1 : 0;
+    if (BYTE_COMMAND)
+    {
+        flags.N = ((result >> 7) & 1);
+        return;
+    }
+
+    flags.N = ((result >> 15) & 1);
+    return;
 }
 
 void set_C (int result)
 {
-    flags.C = (result & 0x010000) ? 1 : 0;
+    if (BYTE_COMMAND)
+    {
+        flags.N = ((result >> 8) & 1);
+        return;
+    }
+    
+    flags.C = ((result >> 16) & 1);
+    return;
 }
 
 void reg_dump(void)
@@ -109,21 +124,21 @@ byte original_mem_values[PDP11_MEMSIZE];
 
 void save_original_values() 
 {
-    // Сохраняем исходные значения регистров
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     memcpy(original_reg_values, reg, REGSIZE * sizeof(word));
-    // Сохраняем исходное состояние памяти
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     memcpy(original_mem_values, mem, PDP11_MEMSIZE * sizeof(byte));
 }
 
 void restore_original_values() 
 {
-    // Восстанавливаем исходные значения регистров
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     memcpy(reg, original_reg_values, REGSIZE * sizeof(word));
-    // Восстанавливаем исходное состояние памяти
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     memcpy(mem, original_mem_values, PDP11_MEMSIZE * sizeof(byte));
 }
 
 void cleanup() 
 {
-    restore_original_values(); // Восстанавливаем исходные значения регистров и память
+    restore_original_values(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 }

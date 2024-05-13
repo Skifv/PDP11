@@ -11,6 +11,8 @@
 
 extern char BYTE_COMMAND;
 
+extern address ostat;
+extern address odata;
 
 typedef struct {
     word mask;
