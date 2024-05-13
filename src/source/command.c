@@ -196,7 +196,7 @@ Arg_XX get_xx(word w)
 void do_halt(void)
 {
     reg_dump();
-    trace(INFO, "THE END\n");
+    trace(TRACE, "THE END\n");
     exit(0);
 }
 
@@ -220,6 +220,11 @@ void do_movb(void)
     set_Z(result);
     set_N(result);
     flags.V = 0;
+
+    if (DD_ARG.adr == odata)
+    {
+        trace(INFO, "%c", b_read(odata, MEMSPACE));
+    }
 }
 
 void do_add(void)
