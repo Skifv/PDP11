@@ -73,6 +73,13 @@ Command command[] =
     {0000000, 0000000, "unknown", do_nothing, NO_PARAMS}
 };
 
+void ostat_set_ready(void)
+{
+    byte ostate = b_read(ostat, MEMSPACE);
+    ostate = ostate | 0200;
+    b_write(ostat, ostate, MEMSPACE);
+}
+
 Arg get_mr(word w)
 {
     Arg res;

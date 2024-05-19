@@ -48,6 +48,7 @@ extern Arg_R R_ARG;
 extern Arg_NN NN_ARG;
 extern Arg_XX XX_ARG;
 
+void ostat_set_ready(void);
 
 Arg get_mr(word w);
 Arg_R get_r(word w);
