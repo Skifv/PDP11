@@ -9,7 +9,7 @@ word read_cmd(void)
 {
     word w = w_read(pc, MEMSPACE);
 
-    trace(TRACE, "%06o %06o : ", pc, w);
+    trace(TRACE, "\r%06o %06o : ", pc, w);
 
     pc += 2;
 
@@ -32,15 +32,22 @@ Command parse_cmd(word w)
             {
                 SS_ARG = get_mr((w >> 6));
             }
+            // у команды есть R?
+            if(command[i].params & HAS_R)
+            {
+                if (strcmp(command[i].name, "rts") == 0)
+                {
+                    R_ARG = get_r(w);
+                }
+                else
+                {
+                    R_ARG = get_r(w >> 6);
+                }
+            }
             // у команды есть DD?
             if (command[i].params & HAS_DD)
             {
                 DD_ARG = get_mr(w);
-            }
-            // у команды есть R?
-            if(command[i].params & HAS_R)
-            {
-                R_ARG = get_r(w >> 6);
             }
             // у команды есть NN?
             if (command[i].params & HAS_NN)
@@ -72,6 +79,5 @@ void run()
     {
         cmd = parse_cmd(read_cmd());
         cmd.do_command();
-        
     }
 }

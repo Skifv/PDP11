@@ -21,42 +21,46 @@ Command command[] =
 {
     {0177777, 0000000, "halt", do_halt, NO_PARAMS},
 
-    {0170000, 0060000, "add", do_add, HAS_DD | HAS_SS},
+    {0170000, 0060000, "add",  do_add,  HAS_DD | HAS_SS},
 
-    {0170000, 0010000, "mov", do_mov, HAS_DD | HAS_SS},
+    {0170000, 0010000, "mov",  do_mov,  HAS_DD | HAS_SS},
     {0170000, 0110000, "movb", do_movb, HAS_DD | HAS_SS},
 
-    {0177000, 0077000, "sob", do_sob, HAS_R | HAS_NN},
+    {0177000, 0077000, "sob",  do_sob,  HAS_R | HAS_NN},
 
-    {0177700, 0005000, "clr", do_clr, HAS_DD},
+    {0177700, 0005000, "clr",  do_clr,  HAS_DD},
 
-    {0177700, 0005700, "tst", do_tst, HAS_DD}, 
+    {0177700, 0005700, "tst",  do_tst,  HAS_DD}, 
     {0177700, 0105700, "tstb", do_tstb, HAS_DD},
 
-    {0170000, 0020000, "cmp", do_cmp, HAS_DD | HAS_SS}, 
+    {0170000, 0020000, "cmp",  do_cmp,  HAS_DD | HAS_SS}, 
     {0170000, 0120000, "cmpb", do_cmpb, HAS_DD | HAS_SS}, 
+
+    {0177000, 0004000, "jsr",  do_jsr,  HAS_R | HAS_DD},
+    {0177770, 0000200, "rts",  do_rts,  HAS_R},
+
 
     {0177700, 0000400, "br", do_br, HAS_XX},
     {0177700, 0000500, "br", do_br, HAS_XX},
     {0177700, 0000600, "br", do_br, HAS_XX},
     {0177700, 0000700, "br", do_br, HAS_XX},
 
-    {0103000, 0103000, "bcc", do_bcc, HAS_XX},
-    {0103400, 0103400, "bcs", do_bcs, HAS_XX},
-    {0001400, 0001400, "beq", do_beq, HAS_XX},
-    {0002000, 0002000, "bge", do_bge, HAS_XX},
-    {0003000, 0003000, "bgt", do_bgt, HAS_XX},
-    {0101000, 0101000, "bhi", do_bhi, HAS_XX},
+    {0103000, 0103000, "bcc",  do_bcc,  HAS_XX},
+    {0103400, 0103400, "bcs",  do_bcs,  HAS_XX},
+    {0001400, 0001400, "beq",  do_beq,  HAS_XX},
+    {0002000, 0002000, "bge",  do_bge,  HAS_XX},
+    {0003000, 0003000, "bgt",  do_bgt,  HAS_XX},
+    {0101000, 0101000, "bhi",  do_bhi,  HAS_XX},
     {0103000, 0103000, "bhis", do_bhis, HAS_XX},
-    {0003400, 0003400, "ble", do_ble, HAS_XX},
-    {0002400, 0002400, "blt", do_blt, HAS_XX},
-    {0103400, 0103400, "blo", do_blo, HAS_XX},
+    {0003400, 0003400, "ble",  do_ble,  HAS_XX},
+    {0002400, 0002400, "blt",  do_blt,  HAS_XX},
+    {0103400, 0103400, "blo",  do_blo,  HAS_XX},
     {0101400, 0101400, "blos", do_blos, HAS_XX},
-    {0100400, 0100400, "bmi", do_bmi, HAS_XX},
-    {0001000, 0001000, "bne", do_bne, HAS_XX},
-    {0100000, 0100000, "bpl", do_bpl, HAS_XX},
-    {0102000, 0102000, "bvc", do_bvc, HAS_XX},
-    {0102400, 0102400, "bvs", do_bvs, HAS_XX},
+    {0100400, 0100400, "bmi",  do_bmi,  HAS_XX},
+    {0001000, 0001000, "bne",  do_bne,  HAS_XX},
+    {0100000, 0100000, "bpl",  do_bpl,  HAS_XX},
+    {0102000, 0102000, "bvc",  do_bvc,  HAS_XX},
+    {0102400, 0102400, "bvs",  do_bvs,  HAS_XX},
 
     {0177777, 000257, "ccc", do_ccc, NO_PARAMS},
     {0177777, 000241, "clc", do_clc, NO_PARAMS},
@@ -123,7 +127,7 @@ Arg get_mr(word w)
         }
         // печать разной мнемоники для PC и других регистров
         if (r == 7)
-            trace(TRACE, "#%o ", res.val);
+            trace(TRACE, "#%06o ", res.val);
         else
             trace(TRACE, "(R%d)+ ", r);
         break;
@@ -135,7 +139,7 @@ Arg get_mr(word w)
         reg[r] += 2;                
         // печать разной мнемоники для PC и других регистров
         if (r == 7)
-            trace(TRACE, "@#%o ", res.adr);
+            trace(TRACE, "@#%06o ", res.adr);
         else
             trace(TRACE, "@(R%d)+ ", r);
         break;
@@ -161,6 +165,34 @@ Arg get_mr(word w)
         res.val = w_read(res.adr, res.reg_space);  
         trace(TRACE, "@-(R%d) ", r);
         break;
+    // мода 8, X(Rn)
+    case 6:
+        word x = w_read(pc, MEMSPACE);
+        pc += 2;
+
+        res.adr = (reg[r] + x) & 0xFFFF;
+        res.val = w_read(res.adr, res.reg_space);
+
+        if (r == 7)
+        {
+            trace(TRACE, "%06o ", (int)res.adr);
+        }
+        else
+            trace(TRACE, "%06o(R%d) ", (int)x, r);
+        break;
+    case 7:
+        x = w_read(pc, MEMSPACE);
+        pc += 2;
+
+        res.adr = w_read((int)reg[r] + x, res.reg_space);
+        res.val = w_read(res.adr, res.reg_space);
+
+        if (r == 7)
+            trace(TRACE, "@%06o ", (int)res.adr);
+        else
+            trace(TRACE, "@%06o(R%d) ", (int)x, r);
+        break;
+        
     // мы еще не дописали другие моды
     default:
         trace(ERROR, "Mode %d not implemented yet!\n", m);
@@ -300,6 +332,19 @@ void do_cmpb(void)
     set_N(result);
     set_Z(result);
     set_C(result);
+}
+
+void do_jsr(void)
+{
+    stack_push(reg[R_ARG.adr]);
+    reg[R_ARG.adr] = pc;
+    pc = DD_ARG.adr;
+}
+
+void do_rts(void)
+{
+    pc = reg[R_ARG.adr];
+    reg[R_ARG.adr] = stack_pop();
 }
 
 // команды выставления флагов

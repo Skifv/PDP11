@@ -9,6 +9,19 @@ static byte mem[PDP11_MEMSIZE];
 
 PWD flags = {0, 0, 0, 0};
 
+void stack_push(word x)
+{
+    sp -= 2;
+    w_write(sp, x, MEMSPACE);
+}
+
+word stack_pop(void)
+{
+    word res = w_read(sp, MEMSPACE);
+    sp += 2;
+    return res;
+}
+
 void set_Z (int result)
 {
     flags.Z = (result == 0) ? 1 : 0;
@@ -42,7 +55,7 @@ void reg_dump(void)
 {
     for (int i = 0; i < 8; i++)
     {
-        trace(TRACE, "r%d:%o ", i, reg[i]);
+        trace(TRACE, "r%d:%06o ", i, reg[i]);
     }
     trace(TRACE, "\n");
 

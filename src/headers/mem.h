@@ -4,10 +4,11 @@ typedef unsigned char byte;
 typedef unsigned int word;
 typedef word address;
 
+#define PDP11_MEMSIZE (64 * 1024)
+
 #define REGSIZE 8
 #define pc reg[REGSIZE - 1]
-
-#define PDP11_MEMSIZE (64 * 1024)
+#define sp reg[REGSIZE - 2]
 
 // Для функций w_read, w_write. Если работаем с регистрами, то REGSPACE, если с mem, то MEMSPACE
 #define REGSPACE 1
@@ -27,6 +28,9 @@ void reg_dump(void);
 void flags_dump(void);
 
 extern word reg[REGSIZE];
+
+void stack_push(word x);
+word stack_pop(void);
 
 byte b_read(address adr, int reg_space);
 void b_write(address adr, byte value, int reg_space);

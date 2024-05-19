@@ -74,6 +74,9 @@ void do_cmpb(void);
 void do_tst(void);
 void do_tstb(void);
 
+void do_jsr(void);
+void do_rts(void);
+
 void do_ccc();
 void do_clc();
 void do_cln();

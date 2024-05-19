@@ -14,7 +14,7 @@ int main(int argc, char * argv[])
 {  
     const char * filename = parse_args(argc, argv);
     load_file(filename);
-
+    
     ostat_set_ready();
     
     run();
