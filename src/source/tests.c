@@ -44,7 +44,6 @@ void print_all_OK (const char * funcname)
     trace(TRACE, "\x1b[1A"); // Перемещаем курсор на одну строку вверх
     trace(TRACE, "\x1b[%dC", (int)strlen(funcname)); // Перемещаем каретку в крайнее правое положение
     trace(TRACE, "\033[1;32m OK                       \033[0m\n");
-
 }
 
 void run_test(int i)
